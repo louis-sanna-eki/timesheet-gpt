@@ -1,0 +1,981 @@
+{
+    "name": "Friday Timesheet Reminder",
+    "flow": [
+        {
+            "id": 1,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 677413
+            },
+            "mapper": {
+                "model": "gpt-4-0613",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "Write a light-hearted mail to consultants reminding them to fill their timesheets. \n\nRemarks:\n- this mail is written and send on Friday\n- sign the mail as TimesheetGPT.\n- be season appropriate\n- use a few emoji\n\n{{now}}"
+                    }
+                ],
+                "max_tokens": "1000",
+                "temperature": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "name": "Write Mail"
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4-0613"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT Models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "My OpenAI connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "number",
+                        "label": "Max Tokens"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": [
+                            {
+                                "name": "token",
+                                "type": "text",
+                                "label": "Token",
+                                "required": true
+                            },
+                            {
+                                "name": "probability",
+                                "type": "number",
+                                "label": "Probability",
+                                "required": true,
+                                "validate": {
+                                    "max": 100,
+                                    "min": -100
+                                }
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Parameter Name",
+                                "required": true
+                            },
+                            {
+                                "name": "type",
+                                "type": "select",
+                                "label": "Input Type",
+                                "options": [
+                                    {
+                                        "label": "Text",
+                                        "value": "text",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Parameter Value"
+                                            }
+                                        ],
+                                        "default": true
+                                    },
+                                    {
+                                        "label": "Number",
+                                        "value": "number",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "number",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Boolean",
+                                        "value": "boolean",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Date",
+                                        "value": "date",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "date",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Any",
+                                        "value": "any",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "any",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "messages",
+                        "spec": [
+                            {
+                                "name": "role",
+                                "type": "select",
+                                "label": "Role",
+                                "options": [
+                                    {
+                                        "label": "System",
+                                        "value": "system"
+                                    },
+                                    {
+                                        "label": "User",
+                                        "value": "user"
+                                    },
+                                    {
+                                        "label": "Assistant",
+                                        "value": "assistant"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            {
+                                "name": "content",
+                                "type": "text",
+                                "label": "Message Content"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 4,
+            "module": "openai-gpt-3:GenerateImage",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 677413
+            },
+            "mapper": {
+                "size": "1024x1024",
+                "model": "dall-e-3",
+                "style": "vivid",
+                "prompt": "A humorous image illustrating an email send to consultants. It should feature a cute white fluffy bunny filling it's timesheet. Set the bunny in a place and context adapted to the season. Pixar style.\n\n[DATE]\n{{now}}\n[MAIL]\n{{1.choices[].text}}",
+                "quality": "standard",
+                "response_format": "url"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 289,
+                    "y": 1,
+                    "name": "Create Image"
+                },
+                "restore": {
+                    "expect": {
+                        "size": {
+                            "mode": "chose",
+                            "label": "1024x1024"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "Dall-E 3"
+                        },
+                        "style": {
+                            "mode": "chose",
+                            "label": "Vivid"
+                        },
+                        "quality": {
+                            "mode": "chose",
+                            "label": "Standard"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "URL"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "My OpenAI connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "dall-e-3",
+                                "dall-e-2"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "prompt",
+                        "type": "text",
+                        "label": "Prompt",
+                        "required": true,
+                        "validate": {
+                            "max": 4000,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "type": "select",
+                        "label": "Size",
+                        "validate": {
+                            "enum": [
+                                "1024x1024",
+                                "1792x1024",
+                                "1024x1792"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "quality",
+                        "type": "select",
+                        "label": "Quality",
+                        "validate": {
+                            "enum": [
+                                "standard",
+                                "hd"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "style",
+                        "type": "select",
+                        "label": "Style",
+                        "validate": {
+                            "enum": [
+                                "vivid",
+                                "natural"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "url",
+                                "imageFile"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "created",
+                        "type": "date",
+                        "label": "Created"
+                    },
+                    {
+                        "name": "data",
+                        "spec": [
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            },
+                            {
+                                "name": "revised_prompt",
+                                "type": "text",
+                                "label": "Revised Prompt"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Data"
+                    },
+                    {
+                        "name": "resImgName",
+                        "type": "text",
+                        "label": "Response Image Name",
+                        "semantic": "file:name"
+                    },
+                    {
+                        "name": "resImgData",
+                        "type": "buffer",
+                        "label": "Response Image Data",
+                        "semantic": "file:data"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 677413
+            },
+            "mapper": {
+                "model": "gpt-4-0613",
+                "select": "chat",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "### TASK\n\nYour task is to format a mail. Answer with the formatted mail. Replace the linebreaks with <br/> tags. You'll often need to use two tags <br/><br/> to separate text blocks. Respond ONLY with the mail. Preserve the EXACT formatting of the initial mail but using <br/>.\n\n### Example of mail after formatting:\n\nSubject: Hey Consultants, don't forget to fill your timesheets! 😎<br/><br/> Dear Consultants,<br/><br/> We hope you've had an amazing week so far! As we approach the weekend, we just wanted to remind you to fill your timesheets before you jet off on your well-deserved break. 🏖️<br/><br/>  ⏰ Wishing you all a jolly weekend ahead! 🎉<br/><br/> Best regards,<br/> TimesheetGPT ✨<br/>"
+                    },
+                    {
+                        "role": "user",
+                        "content": "{{1.choices[].message.content}}"
+                    }
+                ],
+                "temperature": "1",
+                "response_format": "text"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 598,
+                    "y": 3,
+                    "name": "Format Mail"
+                },
+                "restore": {
+                    "expect": {
+                        "stop": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "gpt-4-0613"
+                        },
+                        "select": {
+                            "label": "Create a Chat Completion (GPT Models)"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    }
+                                }
+                            ]
+                        },
+                        "logit_bias": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "mode": "chose",
+                            "label": "Text"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            },
+                            "label": "My OpenAI connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "chat",
+                                "prompt"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "number",
+                        "label": "Max Tokens"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature",
+                        "validate": {
+                            "max": 2,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P",
+                        "validate": {
+                            "max": 1,
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "Number"
+                    },
+                    {
+                        "name": "frequency_penalty",
+                        "type": "number",
+                        "label": "Frequency Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "presence_penalty",
+                        "type": "number",
+                        "label": "Presence Penalty",
+                        "validate": {
+                            "max": 2,
+                            "min": -2
+                        }
+                    },
+                    {
+                        "name": "logit_bias",
+                        "spec": [
+                            {
+                                "name": "token",
+                                "type": "text",
+                                "label": "Token",
+                                "required": true
+                            },
+                            {
+                                "name": "probability",
+                                "type": "number",
+                                "label": "Probability",
+                                "required": true,
+                                "validate": {
+                                    "max": 100,
+                                    "min": -100
+                                }
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Token Probability"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "select",
+                        "label": "Response Format",
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "json_object"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "seed",
+                        "type": "integer",
+                        "label": "Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "spec": {
+                            "name": "value",
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Stop Sequences",
+                        "validate": {
+                            "maxItems": 4
+                        }
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Parameter Name",
+                                "required": true
+                            },
+                            {
+                                "name": "type",
+                                "type": "select",
+                                "label": "Input Type",
+                                "options": [
+                                    {
+                                        "label": "Text",
+                                        "value": "text",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Parameter Value"
+                                            }
+                                        ],
+                                        "default": true
+                                    },
+                                    {
+                                        "label": "Number",
+                                        "value": "number",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "number",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Boolean",
+                                        "value": "boolean",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Date",
+                                        "value": "date",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "date",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Any",
+                                        "value": "any",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "any",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Other Input Parameters"
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "messages",
+                        "spec": [
+                            {
+                                "name": "role",
+                                "type": "select",
+                                "label": "Role",
+                                "options": [
+                                    {
+                                        "label": "System",
+                                        "value": "system"
+                                    },
+                                    {
+                                        "label": "User",
+                                        "value": "user"
+                                    },
+                                    {
+                                        "label": "Assistant",
+                                        "value": "assistant"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            {
+                                "name": "content",
+                                "type": "text",
+                                "label": "Message Content"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 3,
+            "module": "mailjet:sendAMessage",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 680546
+            },
+            "mapper": {
+                "Subject": "TimesheetGPT: Your Friday Friendly Nudge!",
+                "FromName": "TimesheetGPT",
+                "FromEmail": "louis.sanna@gmail.com",
+                "Html-part": "<div style=\"white-space: pre-line;\">\n{{12.choices[].message.content}}\n</div>\n<br/>\n<img src=\"{{4.data[].url}}\"/>",
+                "Recipients": [
+                    {
+                        "Email": "france@ekimetrics.com"
+                    }
+                ],
+                "messageContentType": "html"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 957,
+                    "y": 13,
+                    "name": "Send mail"
+                },
+                "restore": {
+                    "expect": {
+                        "Cc": {
+                            "mode": "chose"
+                        },
+                        "Bcc": {
+                            "mode": "chose"
+                        },
+                        "FromEmail": {
+                            "mode": "edit"
+                        },
+                        "Recipients": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "Attachments": {
+                            "mode": "chose"
+                        },
+                        "messageContentType": {
+                            "label": "HTML"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "mailjet"
+                            },
+                            "label": "My Mailjet connection (Louis Sanna)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:mailjet",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "FromEmail",
+                        "type": "select",
+                        "label": "Sender's Email",
+                        "required": true
+                    },
+                    {
+                        "name": "FromName",
+                        "type": "text",
+                        "label": "Sender's Name"
+                    },
+                    {
+                        "name": "Recipients",
+                        "spec": [
+                            {
+                                "name": "Email",
+                                "type": "email",
+                                "label": "Recipient's Email",
+                                "required": true
+                            },
+                            {
+                                "name": "Name",
+                                "type": "text",
+                                "label": "Recipient's Name"
+                            }
+                        ],
+                        "type": "array",
+                        "required": true
+                    },
+                    {
+                        "name": "Cc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "CC's Email"
+                        },
+                        "type": "array",
+                        "label": "CCs"
+                    },
+                    {
+                        "name": "Bcc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "BCC's Email"
+                        },
+                        "type": "array",
+                        "label": "BCCs"
+                    },
+                    {
+                        "name": "messageContentType",
+                        "type": "select",
+                        "label": "Message Content Types",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "text",
+                                "html",
+                                "template"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Attachments",
+                        "spec": [
+                            {
+                                "name": "Filename",
+                                "type": "filename",
+                                "label": "Filename",
+                                "required": true,
+                                "semantic": "file:name"
+                            },
+                            {
+                                "name": "Content",
+                                "type": "buffer",
+                                "label": "Data",
+                                "required": true,
+                                "semantic": "file:data"
+                            }
+                        ],
+                        "type": "array"
+                    },
+                    {
+                        "name": "Subject",
+                        "type": "text",
+                        "required": true
+                    },
+                    {
+                        "name": "Html-part",
+                        "type": "text",
+                        "label": "HTML Format Content",
+                        "required": true
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com"
+    }
+}
